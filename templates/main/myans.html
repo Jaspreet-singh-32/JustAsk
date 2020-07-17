@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}{{user}} | My Answeres | JustAsk{% endblock title %}
+{% block myans %}active{% endblock myans %}
+
+{% block body %}
+{% load humanize %}
+{% load extras %}
+<div class="container my-2">
+{% if answeres|length is not 0 %}
+<h3>Answeres given on {{answeres|length}} questions.</h3>
+{% endif %}
+  {% comment %} <p>
+    <center> <button class="btn btn-primary " type="button" data-toggle="collapse" data-target="#collapseExample"
+        aria-expanded="false" aria-controls="collapseExample">
+        Ask Question ?
+      </button></center>
+  </p>
+  <div class="collapse" id="collapseExample">
+    <div class="card card-body">
+      {% if user.is_authenticated %}
+      <form action='/AddQues' method='GET'>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Enter Question Here</label>
+          <input type="text" Required name='ques' class="form-control" aria-describedby="emailHelp">
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+      {% else %}<p>Please Login or Sign up to add Question.</p>{% endif %}
+    </div>
+  </div> {% endcomment %}
+  {% for ans in answeres %}
+  <div class="card my-2">
+    <div class="card-header">
+      Asked by - <b>{{ans.ques.user}}</b> : {{ans.ques.date|naturaltime}}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title "><a class="text-dark" href="/{{ans.ques.ques|Qmark}}/{{ans.ques.pk}}">{{ans.ques.ques}}</a>
+      </h5>
+      {% comment %} <p class="card-text">Answeres:<br> {% for i in ans %}{% if i.ques.pk == ques.pk %}<b>{{i.user}}</b>
+        - {{i.ans}}{% endif %}{% endfor %}</p> {% endcomment %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock body %}

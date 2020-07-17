@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ques.ques}} | JustAsk
+{% endblock title %}
+{% block body %}
+{% load humanize %}
+{% comment %} <h1>{{ques.ques}}</h1> {% endcomment %}
+{% load extras%}
+<div class="container my-2">
+    <div class="card">
+        <div class="card-header">
+            Asked by - <b>{{ques.user}} : </b>{{ques.date|naturaltime}}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ques.ques}}</h5>
+            <p>
+
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample">
+                    Add Answeres
+                </button>
+            </p>
+            <div class="collapse text-center" id="collapseExample">
+                <div class="card card-body">
+                {% if user.is_authenticated %}
+                    <form action="/answere/" method="POST">{% csrf_token %}
+                        <div class="form-group">
+                            <label for="exampleInputEmail1"></label>
+                            <input type="hidden" name="ques" value="{{ques.ques|Qmark}}">
+                            <input type="hidden" name="id" value="{{ques.pk}}">
+                            <input type="text" class="form-control" required name="ans" id=""
+                                placeholder="Write your answere..." aria-describedby="emailHelp">
+                            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                                else.</small> -->
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    {% else %}<p>Please Login or Sign up to add Question.</p>
+                    {% endif %}
+
+                </div>
+            </div>
+            <center><p>Answeres given -  {{answeres|length}} </p></center>
+        </div>
+
+        {% for ans in answeres %}
+        <div class="row mx-2 my-2" style="border-bottom: 1px solid;">
+            <div class="col-md-1 text-center"><svg width="2em" height="2em" viewBox="0 0 16 16"
+                    class="bi bi-person-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z" />
+                    <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                    <path fill-rule="evenodd"
+                        d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z" />
+                </svg></div>
+            <div class="col-md-11"><b>{{ans.user}}</b> : {{ans.date|naturaltime}}<p>{{ans.ans}}</p>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="card-footer text-muted">
+            {{ques.date|naturaltime}}
+        </div>
+    </div>
+
+</div>
+{% endblock body %}

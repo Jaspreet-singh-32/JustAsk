@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}{{user}} | JustAsk
+{% endblock title %}
+{% block body %}
+{% load humanize %}
+{% load extras %}
+<link rel="stylesheet" href="css/index.css">
+<div class="container my-2">
+  <p>
+    <center> <button class="btn btn-primary " type="button" data-toggle="collapse" data-target="#collapseExample"
+        aria-expanded="false" aria-controls="collapseExample">
+        Ask Question ?
+      </button></center>
+  </p>
+  <div class="collapse" id="collapseExample">
+    <div class="card card-body">
+      {% if user.is_authenticated %}
+      <form action='/AddQues' method='GET'>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Enter Question Here</label>
+          <input type="text" Required name='ques' class="form-control" aria-describedby="emailHelp">
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+      {% else %}<p>Please Login or Sign up to add Question.</p>{% endif %}
+    </div>
+  </div>
+  {% for ques in questions %}
+  <div class="card my-2">
+    <div class="card-header">
+      Asked by - <b>{{ques.user}}</b> : {{ques.date|naturaltime}}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title "><a class="text-dark" href="/{{ques.ques|Qmark}}/{{ques.pk}}">{{ques.ques}}</a>
+      </h5>
+      {% comment %} <p class="card-text">Answeres:<br> {% for i in ans %}{% if i.ques.pk == ques.pk %}<b>{{i.user}}</b>
+        - {{i.ans}}{% endif %}{% endfor %}</p> {% endcomment %}
+    </div>
+  </div>
+  {% endfor %}
+
+
+{% if questions.has_other_pages %}
+  <ul class="pagination">
+    {% if questions.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ questions.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled page-item page-link"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in questions.paginator.page_range %}
+      {% if questions.number == i %}
+        <li class="active page-item page-link"><span class='text-dark'>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if questions.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ questions.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled page-item page-link"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+</div>
+<br><br><br><br>
+{% endblock body %}
